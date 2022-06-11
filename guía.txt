@@ -1,0 +1,4 @@
+1)para iniciar el proyecto:
+npm init -y (y -> todo yes)
+
+2)
