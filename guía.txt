@@ -1,4 +1,7 @@
 1)para iniciar el proyecto:
 npm init -y (y -> todo yes)
 
-2)
+2)npm install nodemon -D
+ejecutar index.js mediante: ./node_modules/.bin/nodemon index.js
+
+3)npm install express
