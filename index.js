@@ -13,16 +13,11 @@ let djs = [
     }
 ];
 
-//const http = require('http'); //importando modulo http para hacer requests
-
-/* const app = http.createServer((request, response) => {
-    response.writeHead(200, {'Content-Type': 'application/json'});
-    response.end(JSON.stringify(djs));
-}); */
-
 const express = require('express');
 const app = express();
+const logger = require('./loggerMiddleware');
 app.use(express.json()); //parsea jsons
+app.use(logger);
 
 app.get('/', (request,response) => {
     response.send('<h1>node.js</h1>');
@@ -76,7 +71,15 @@ app.post('/api/djs', (request,response) => {
     response.json(newDj);
 })
 
+app.use((request, response) => {
+    console.log(request.path); //logea desde que url viene
+    response.status(404).json({
+        error: 'URL not founded'
+    });
+});
+
 const PORT = 3001;
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 }); //el servidor escucha el PORT
