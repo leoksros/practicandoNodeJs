@@ -5,3 +5,14 @@ npm init -y (y -> todo yes)
 ejecutar index.js mediante: ./node_modules/.bin/nodemon index.js
 
 3)npm install express
+
+
+opcional) npm install cors -E // dependencia producciòn
+
+
+heroku deploy
+
+1_crear Procfile
+2_instalar heroku cli
+3_ heroku create }// crea app heroku
+

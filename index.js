@@ -16,6 +16,7 @@ let djs = [
 const express = require('express');
 const app = express();
 const logger = require('./loggerMiddleware');
+app.use(cors); //permite que cualquier origen funcione en nuestra api
 app.use(express.json()); //parsea jsons
 app.use(logger);
 
@@ -78,7 +79,7 @@ app.use((request, response) => {
     });
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001; //heroku  process.env.PORT
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
