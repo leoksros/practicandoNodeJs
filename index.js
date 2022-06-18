@@ -16,7 +16,8 @@ let djs = [
 const express = require('express');
 const app = express();
 const logger = require('./loggerMiddleware');
-app.use(cors); //permite que cualquier origen funcione en nuestra api
+const cors = require('cors');
+app.use(cors()); //permite que cualquier origen funcione en nuestra api
 app.use(express.json()); //parsea jsons
 app.use(logger);
 
