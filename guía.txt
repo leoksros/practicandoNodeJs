@@ -12,7 +12,10 @@ opcional) npm install cors -E // dependencia producciòn
 
 heroku deploy
 
-1_crear Procfile
-2_instalar heroku cli
+1_ crear Procfile
+2_ instalar heroku cli
 3_ heroku create }// crea app heroku
+4_ mongo db
+5_ mongoose -> npm install mongoose
+6_ instalar dotenv -> npm install dotenv (para que detecte el .env)
 

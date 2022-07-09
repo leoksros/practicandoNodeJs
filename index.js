@@ -1,77 +1,80 @@
-let djs = [
-    {
-        id: 1,
-        name: 'John',
-        surname: 'Digweed',
-        genre: 'Techno'
-    },
-    {
-        id: 2,
-        name: 'Nick',
-        surname: 'Warren',
-        genre: 'Progressive House'
-    }
-];
+
+require('dotenv').config(); //para utilizar .env
+require('./mongo');
+
+let bookings = [];
 
 const express = require('express');
 const app = express();
 const logger = require('./loggerMiddleware');
 const cors = require('cors');
+const Booking = require('./models/Booking');
+
 app.use(cors()); //permite que cualquier origen funcione en nuestra api
 app.use(express.json()); //parsea jsons
-app.use(logger);
 
 app.get('/', (request,response) => {
-    response.send('<h1>node.js</h1>');
+    response.send('<h1>RESERVAS. node.js & Mongo DB</h1>');
 });
 
-app.get('/api/djs', (request,response) => {
-    response.json(djs);
+app.get('/api/bookings', (request,response) => {
+    console.log('Searching all bookings...');
+    Booking.find({}).then(bookings => {
+        response.json(bookings);
+    });
 });
 
-app.get('/api/djs/:id', (request,response) => {
+app.get('/api/bookings/:id', (request,response) => {
     const id = Number(request.params.id);
-    const dj = djs.find(dj => dj.id == id);
-    if(dj){
-        response.json(dj);
-    } else {
-        response.status(404).end();
-    }
+    console.log('Searching booking...');
+    Booking.findById(id)
+        .then(booking => {
+            if(booking){
+                return response.json(booking);
+            } else {
+                response.status(404).end();
+            }
+        })
 });
 
-app.delete('/api/djs/:id', (request,response) => {
+
+app.delete('/api/bookings/:id', (request,response) => {
     const id = Number(request.params.id);
-    djs = djs.filter(dj => dj.id !== id);
-    response.json(djs);
+    console.log('Deleting booking ID: ' + id + "...");
+    bookings = bookings.filter(booking => booking.id !== id);
+    response.json(bookings);
 });
 
-app.post('/api/djs', (request,response) => {
-    const dj = request.body;
+app.post('/api/bookings', (request,response) => {
+    console.log('Creating booking...');
+    const booking = request.body;
     
-    if(!dj || !dj.name) {
+    if(!booking || !booking.name) {
         return response.status(400).json({
-            error: 'dj.name is missing!'
-        })
+            error: 'booking.name is missing!'
+        });
     }
-    if(!dj || !dj.surname) {
+
+    if(!booking || !booking.phone) {
         return response.status(400).json({
-            error: 'dj.surname is missing!'
-        })
+            error: 'booking.phone is missing!'
+        });
     }
 
-    const idDjs = djs.map(dj => dj.id);
-    const maxId = Math.max(... idDjs);
-    const newDj = {
-        id: maxId + 1,
-        name: dj.name,
-        surname: dj.surname,
-        genre: dj.genre !== 'undefined' ? dj.genre : 'no-value'
-    }
+    const newBooking = new Booking({
+        name: booking.name,
+        mail: booking.mail,
+        phone: booking.phone
+    });
 
-    djs = [... djs, newDj]; // djs.concat(newDj);
-
-    response.json(newDj);
-})
+    newBooking.save()
+        .then(result => {
+            console.log(result);
+            response.json(newBooking);
+        }).catch(e =>  {
+            console.error(e);
+        }); 
+});
 
 app.use((request, response) => {
     console.log(request.path); //logea desde que url viene
