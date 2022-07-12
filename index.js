@@ -2,6 +2,7 @@
 require('dotenv').config(); //para utilizar .env
 require('./mongo');
 
+
 let bookings = [];
 
 const express = require('express');
@@ -9,6 +10,7 @@ const app = express();
 const logger = require('./loggerMiddleware');
 const cors = require('cors');
 const Booking = require('./models/Booking');
+const mailer = require('./mailer');
 
 app.use(cors()); //permite que cualquier origen funcione en nuestra api
 app.use(express.json()); //parsea jsons
@@ -47,7 +49,10 @@ app.delete('/api/bookings/:id', (request,response) => {
 
 app.post('/api/bookings', (request,response) => {
     console.log('Creating booking...');
+
     const booking = request.body;
+
+    mailer.sendMail(booking);
     
     if(!booking || !booking.name) {
         return response.status(400).json({
